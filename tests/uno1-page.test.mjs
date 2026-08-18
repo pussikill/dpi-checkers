@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { classifyTcp1620, compareProbe } from "../uno1/checker-core.mjs";
+import { SERVERS, classifyTcp1620, compareProbe } from "../uno1/main.js";
 
 const expected = [
   ["UNO1.DE-01", "Germany", "de1.uno1.fyi", "37.46.18.193", 210546],
@@ -11,11 +11,8 @@ const expected = [
 ];
 
 test("UNO1 checker publishes exactly the four owned TLS hostnames", async () => {
-  const servers = JSON.parse(
-    await readFile(new URL("../uno1/servers.json", import.meta.url), "utf8"),
-  );
   assert.deepEqual(
-    servers.map(({ id, location, host, ip, asn }) => [
+    SERVERS.map(({ id, location, host, ip, asn }) => [
       id,
       location,
       host,
@@ -24,7 +21,7 @@ test("UNO1 checker publishes exactly the four owned TLS hostnames", async () => 
     ]),
     expected,
   );
-  assert.ok(servers.every(({ host }) => host.endsWith(".uno1.fyi")));
+  assert.ok(SERVERS.every(({ host }) => host.endsWith(".uno1.fyi")));
 });
 
 test("unknown HTTPS and unknown large POST are inconclusive", () => {
