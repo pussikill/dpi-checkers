@@ -1,9 +1,11 @@
 # DPI Checkers
+
 [![dpi-ch release](https://github.com/hyperion-cs/dpi-checkers/actions/workflows/dpich_release.yml/badge.svg)](https://github.com/hyperion-cs/dpi-checkers/actions/workflows/dpich_release.yml)
 
 🚀 This repository contains checkers that allow you to determine if your residential ISP (or a server in a data center) has DPI, as well as the specific methods (and their parameters) the censor uses for restrictions.
 
 🤝 Join our community:
+
 - Telegram group: [@dpi_checkers](https://t.me/dpi_checkers)
 
 > [!WARNING]
@@ -12,8 +14,12 @@
 > The authors and contributors **assume no liability** for any misuse or violations arising from the use of this materials.
 
 ## Checkers list
+
 :bulb: For web checkers: some providers block access to _hyperion-cs.github.io_ — in this case, you can
 preload checker in your browser.
+
+- **UNO1 :: Owned servers** => [https://pussikill.github.io/dpi-checkers/uno1/](https://pussikill.github.io/dpi-checkers/uno1/)<br>
+  Browser-only DNS, ASN, HTTPS, and TCP 16-20 diagnostics for the four owned UNO1 endpoints. Run with the VPN disabled. This does not authenticate or validate a VLESS/Reality tunnel.
 
 - ❗ **RU :: DPI-CH** (dpi comprehensive checker)<br>
   This is the "big brother" of all other checkers, not limited by the browser sandbox. It is an attempt to create a powerful tool for general-purpose DPI analysis.<br>
@@ -23,7 +29,7 @@ preload checker in your browser.
 - **RU :: TCP 16-20** => [https://hyperion-cs.github.io/dpi-checkers/ru/tcp-16-20](https://hyperion-cs.github.io/dpi-checkers/ru/tcp-16-20)<br>
   Allows to detect _TCP 16-20_ blocking method in Russia + host alive check. The tests use popular web-services hosted by providers whose subnets are potentially subject to limitations. The testing process runs right in your browser and the source code is available. VPN should be disabled during the check.<br>
   This checker has optional _GET_ parameters:
-  | name | type |	default	| description |
+  | name | type | default | description |
   |:-:|:-:|:-:|-|
   | timeout | int | `15000` | Timeout for connecting/fetching data from endpoint (in ms). |
   | host | string | — | A custom host to check in addition to the default ones (e.g. your steal-oneself server). It doesn't matter what the CORS policy is. |
@@ -33,12 +39,12 @@ preload checker in your browser.
 
 - **RU :: IPv4 Whitelisted Subnets** => [https://hyperion-cs.github.io/dpi-checkers/ru/ipv4-whitelisted-subnets](https://hyperion-cs.github.io/dpi-checkers/ru/ipv4-whitelisted-subnets)<br>
   Allows to detect [IPv4 subnets](https://en.wikipedia.org/wiki/Subnet) from the so-called "whitelist" in cases where a censor restricts TCP/UDP/etc connections by IP subnets (aka [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) censorship). There are three control buttons:<br>
-  - _Cache_ — fetch and cache suitable IPv4 subnets in the client browser (_local storage_) for further tests. They are saved even after reloading the checker's web page, exiting a browser, etc. This process uses services that are almost certainly not on the whitelist, so it is wise to run it when your provider does not use whitelists (e.g., your "home" ISP's Wi-Fi). This process can only be repeated when you want to update the list of testable subnets of suitable [ASes](https://en.wikipedia.org/wiki/Autonomous_system_(Internet)) (and they change quite rarely);
+  - _Cache_ — fetch and cache suitable IPv4 subnets in the client browser (_local storage_) for further tests. They are saved even after reloading the checker's web page, exiting a browser, etc. This process uses services that are almost certainly not on the whitelist, so it is wise to run it when your provider does not use whitelists (e.g., your "home" ISP's Wi-Fi). This process can only be repeated when you want to update the list of testable subnets of suitable [ASes](<https://en.wikipedia.org/wiki/Autonomous_system_(Internet)>) (and they change quite rarely);
   - _Check_ — check suitable subnets if they are on the whitelist;
   - _Save_ — save the check results to a _.csv_ file.
 
   This checker has optional _GET_ parameters:
-  | name | type |	default	| description |
+  | name | type | default | description |
   |:-:|:-:|:-:|-|
   | timeout | int | `5000` | Timeout for connecting/fetching data from host (in ms). |
   | sn_sample_size | int | `25` | The number of random unique hosts that will be checked for each suitable subnet. |
@@ -51,13 +57,14 @@ preload checker in your browser.
   - This checker will not work if a censor, in addition to subnet restrictions, also restricts [TLS SNI](https://en.wikipedia.org/wiki/Server_Name_Indication) (_unfortunately, the browser sandbox is unable to spoof this parameter_);
   - If you are using mobile internet, don't worry about large traffic usage (_it will use a couple of megabytes at maximum_);
   - It is prohibited to minimize the browser or lock the screen on phones during the check (_however, you can share Wi-Fi from your phone to your computer — this is more convenient_);
-  - Even with performance optimizations, the checker can take quite a while to run (_several tens of minutes_). In the worst case, the time ≈ "_number of suitable subnets_" × `timeout` (_see above_). 
+  - Even with performance optimizations, the checker can take quite a while to run (_several tens of minutes_). In the worst case, the time ≈ "_number of suitable subnets_" × `timeout` (_see above_).
 
 - **RU :: TCP 16-20 DWC** (domain whitelist checker)<br>
   Allows to find out whitelisted items on DPIs where _TCP 16-20_ blocking method is applied. This kind of information can be interesting in its own right as well as useful for bypassing limitations.<br>
   A list of domains is required as input. Also requires _Python 3_, the _curl_ utility, and a specially configured server on "limited" networks. See [here](ru/tcp-16-20_dwc) for details (ready-to-use results are also available for download there).
 
 ## Contributing
+
 We would be happy if you could help us improve our checkers through PR or by creating issues (please use only English for international communication).
 Also you can star the repository so you don't lose the checkers.
 The repository is available [here](https://github.com/hyperion-cs/dpi-checkers).

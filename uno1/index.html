@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UNO1 Server Checker</title>
+    <link rel="stylesheet" href="../ru/tcp-16-20/style.css" />
+    <style>
+      table {
+        min-width: 760px;
+      }
+      .scroll {
+        overflow-x: auto;
+      }
+      code {
+        overflow-wrap: anywhere;
+      }
+    </style>
+    <link rel="preconnect" href="https://dns.google" />
+    <link rel="preconnect" href="https://stat.ripe.net" />
+  </head>
+  <body>
+    <div id="header">
+      <button id="start-btn" class="btn" disabled>🔍 Start</button>
+      <span class="header-status"
+        >Status: <span id="status" class="status-ready">Loading…</span></span
+      >
+    </div>
+    <div id="observer"></div>
+    <div class="scroll">
+      <table id="results">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Server</th>
+            <th>DNS / ASN</th>
+            <th>HTTPS</th>
+            <th>TCP 16-20</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <pre id="log"></pre>
+    <div class="footer">
+      Run with the VPN disabled on the network you want to diagnose. The browser
+      checks HTTPS on TCP/443; it does not authenticate or validate VLESS,
+      Reality, gRPC, or a complete tunnel. A TLS certificate mismatch is
+      reported as <b>Unknown</b>, not as a successful connection.
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

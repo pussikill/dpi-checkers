@@ -1,0 +1,26 @@
+[
+  {
+    "id": "UNO1.DE-01",
+    "location": "Germany",
+    "country": "🇩🇪",
+    "host": "de1.uno1.fyi"
+  },
+  {
+    "id": "UNO1.FI-01",
+    "location": "Finland",
+    "country": "🇫🇮",
+    "host": "fi1.uno1.fyi"
+  },
+  {
+    "id": "UNO1.SE-01",
+    "location": "Sweden",
+    "country": "🇸🇪",
+    "host": "se1.uno1.fyi"
+  },
+  {
+    "id": "UNO1.RU-01",
+    "location": "Moscow",
+    "country": "🇷🇺",
+    "host": "msk1.uno1.fyi"
+  }
+]
