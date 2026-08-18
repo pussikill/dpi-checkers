@@ -1,4 +1,5 @@
 import { AEZA_PROVIDER, selectSnapshotPrefixes } from "./aeza-source.mjs";
+import { saveResultsExport } from "./results-export.mjs";
 
 const TEST_SUITE = [
   AEZA_PROVIDER,
@@ -412,22 +413,12 @@ const fetchProviderIpv4Subnets = async (provider) => {
   return suitable;
 };
 
-const saveResults = () => {
-  const content =
-    "provider;cidr;aliveCount\n" +
-    resultsData
-      .map((x) => `${x.provider};${x.cidr};${x.aliveCount}`)
-      .join("\n");
-  const blob = new Blob([content], {
-    type: "text/csv;charset=utf-8",
-  });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `ipv4-whitelisted-subnets-${new Date().toISOString()}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+const saveResults = async () => {
+  try {
+    await saveResultsExport(resultsData);
+  } catch (error) {
+    logPush("ERR", "Results exporter", `Save failed => ${error}`);
+  }
 };
 
 cacheSubnetsButton.onclick = () => {
@@ -438,8 +429,8 @@ checkSubnetsButton.onclick = () => {
   checkSubnets();
 };
 
-saveButton.onclick = () => {
-  saveResults();
+saveButton.onclick = async () => {
+  await saveResults();
 };
 
 testSuiteOptions.onchange = () => {
