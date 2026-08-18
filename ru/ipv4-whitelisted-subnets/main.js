@@ -1,19 +1,49 @@
+import { AEZA_PROVIDER, selectSnapshotPrefixes } from "./aeza-source.mjs";
+
 const TEST_SUITE = [
-  { "name": "Yandex", "asns": ["13238", "44534", "200350", "202611", "208398", "208795", "210656", "212066", "215013", "215109", "48207"] },
-  { "name": "VK", "asns": ["28709", "47541", "47542", "47764", "60863", "62243", "199295", "207581"] },
-  { "name": "EdgeCenter", "asns": ["201589", "207059", "210756"] },
-  { "name": "MTS", "asns": ["209024", "60490"] },
-  { "name": "MegaFon", "asns": ["31133"] },
-  { "name": "Selectel", "asns": ["50340", "49505"] },
-  { "name": "Reg.ru", "asns": ["197695"] },
-  { "name": "CDNVideo", "asns": ["204720"] },
-  { "name": "RuFox", "asns": ["25490"] },
-  { "name": "EuroByte", "asns": ["210079"] },
-  { "name": "Contell", "asns": ["204490"] },
-  { "name": "Start2", "asns": ["61400"] },
-  { "name": "MT FINANCE", "asns": ["214822"] },
-  { "name": "Citytelecom", "asns": ["3175"] },
-  { "name": "DDOS GUARD", "asns": ["57724"] },
+  AEZA_PROVIDER,
+  {
+    name: "Yandex",
+    asns: [
+      "13238",
+      "44534",
+      "200350",
+      "202611",
+      "208398",
+      "208795",
+      "210656",
+      "212066",
+      "215013",
+      "215109",
+      "48207",
+    ],
+  },
+  {
+    name: "VK",
+    asns: [
+      "28709",
+      "47541",
+      "47542",
+      "47764",
+      "60863",
+      "62243",
+      "199295",
+      "207581",
+    ],
+  },
+  { name: "EdgeCenter", asns: ["201589", "207059", "210756"] },
+  { name: "MTS", asns: ["209024", "60490"] },
+  { name: "MegaFon", asns: ["31133"] },
+  { name: "Selectel", asns: ["50340", "49505"] },
+  { name: "Reg.ru", asns: ["197695"] },
+  { name: "CDNVideo", asns: ["204720"] },
+  { name: "RuFox", asns: ["25490"] },
+  { name: "EuroByte", asns: ["210079"] },
+  { name: "Contell", asns: ["204490"] },
+  { name: "Start2", asns: ["61400"] },
+  { name: "MT FINANCE", asns: ["214822"] },
+  { name: "Citytelecom", asns: ["3175"] },
+  { name: "DDOS GUARD", asns: ["57724"] },
 ];
 
 let TIMEOUT_MS = 5000;
@@ -25,7 +55,8 @@ let SUBNET_ONLY_24_PREFIX = true;
   const params = new URLSearchParams(window.location.search);
 
   TIMEOUT_MS = parseInt(params.get("timeout")) || TIMEOUT_MS;
-  SUBNET_SAMPLE_SIZE = parseInt(params.get("sn_sample_size")) || SUBNET_SAMPLE_SIZE;
+  SUBNET_SAMPLE_SIZE =
+    parseInt(params.get("sn_sample_size")) || SUBNET_SAMPLE_SIZE;
   SUBNET_ALIVE_MIN = parseInt(params.get("sn_alive_min")) || SUBNET_ALIVE_MIN;
 
   let sn_only_24_prefix = params.get("sn_only_24_prefix");
@@ -34,13 +65,13 @@ let SUBNET_ONLY_24_PREFIX = true;
   }
 })();
 
-const fetchOpt = s => ({
+const fetchOpt = (s) => ({
   method: "HEAD",
   credentials: "omit",
   cache: "no-store",
   signal: s,
   redirect: "manual",
-  keepalive: true
+  keepalive: true,
 });
 
 const cacheSubnetsButton = document.getElementById("cache-subnets-btn");
@@ -59,9 +90,11 @@ let cachedSubnets = {};
 
 const selectedTestSuite = () => {
   const selectedNames = new Set(
-    Array.from(testSuiteOptions.querySelectorAll("input[type=checkbox]:checked")).map(input => input.value)
+    Array.from(
+      testSuiteOptions.querySelectorAll("input[type=checkbox]:checked"),
+    ).map((input) => input.value),
   );
-  return TEST_SUITE.filter(provider => selectedNames.has(provider.name));
+  return TEST_SUITE.filter((provider) => selectedNames.has(provider.name));
 };
 
 const updateProviderSummary = () => {
@@ -82,15 +115,20 @@ for (const provider of TEST_SUITE) {
 
 const logPush = (level, prefix, msg) => {
   const now = new Date();
-  const ts = now.toLocaleTimeString([], { hour12: false }) + "." + now.getMilliseconds().toString().padStart(3, "0");
+  const ts =
+    now.toLocaleTimeString([], { hour12: false }) +
+    "." +
+    now.getMilliseconds().toString().padStart(3, "0");
   log.textContent += `[${ts}] ${prefix ? prefix + "/" : ""}${level}: ${msg}\n`;
   log.scrollTop = log.scrollHeight;
 };
 
-const timeElapsed = t0 => `${(performance.now() - t0).toFixed(1)} ms`;
+const timeElapsed = (t0) => `${(performance.now() - t0).toFixed(1)} ms`;
 
-const getUniqueUrl = url => {
-  return url.includes('?') ? `${url}&t=${Math.random()}` : `${url}?t=${Math.random()}`;
+const getUniqueUrl = (url) => {
+  return url.includes("?")
+    ? `${url}&t=${Math.random()}`
+    : `${url}?t=${Math.random()}`;
 };
 
 const checkSubnet = async (provider, cidr) => {
@@ -99,14 +137,14 @@ const checkSubnet = async (provider, cidr) => {
 
   const ips = getSubnetSample(cidr, SUBNET_SAMPLE_SIZE);
   const earlyAbortCtrl = new AbortController();
-  const tasks = []
+  const tasks = [];
 
   const ref = { aliveCount: 0 }; // Shares between tasks.
 
   for (const ip of ips) {
     tasks.push(checkIpv4Host(ip, earlyAbortCtrl, ref));
   }
-  const aliveCount = (await Promise.all(tasks)).filter(x => x).length;
+  const aliveCount = (await Promise.all(tasks)).filter((x) => x).length;
 
   if (aliveCount > 0) {
     const row = resultsTable.insertRow();
@@ -117,12 +155,13 @@ const checkSubnet = async (provider, cidr) => {
     numCell.textContent = ++resultsCount;
     providerCell.innerHTML = `<b>${provider}</b>`;
 
-    subnetCell.textContent = aliveCount >= SUBNET_ALIVE_MIN ? `${cidr} ✅` : `${cidr} ⚠️`;
+    subnetCell.textContent =
+      aliveCount >= SUBNET_ALIVE_MIN ? `${cidr} ✅` : `${cidr} ⚠️`;
     resultsData.push({ provider, cidr, aliveCount });
   }
 
   logPush("INFO", prefix, `Done (alive: ${aliveCount}).`);
-}
+};
 
 const checkSubnets = async () => {
   const t0 = performance.now();
@@ -135,9 +174,12 @@ const checkSubnets = async () => {
 
   resultsCount = 0;
   resultsData = [];
-  const selectedProviders = new Set(selectedTestSuite().map(provider => provider.name));
-  const selectedSubnets = Object.entries(cachedSubnets)
-    .filter(([provider]) => selectedProviders.has(provider));
+  const selectedProviders = new Set(
+    selectedTestSuite().map((provider) => provider.name),
+  );
+  const selectedSubnets = Object.entries(cachedSubnets).filter(([provider]) =>
+    selectedProviders.has(provider),
+  );
   const subnetsTotal = selectedSubnets.flatMap(([, subnets]) => subnets).length;
   let subnetsChecked = 0;
 
@@ -165,8 +207,12 @@ const checkSubnets = async () => {
   }
 
   console.log("result data", resultsData);
-  logPush("INFO", prefix, `Done (found: ${resultsCount}, elapsed: ${timeElapsed(t0)}).`);
-}
+  logPush(
+    "INFO",
+    prefix,
+    `Done (found: ${resultsCount}, elapsed: ${timeElapsed(t0)}).`,
+  );
+};
 
 const cacheSubnets = async () => {
   const t0 = performance.now();
@@ -193,7 +239,10 @@ const cacheSubnets = async () => {
     }
 
     console.log("cached subnets", cachedSubnets);
-    localStorage.setItem("ipv4-whitelisted-subnets_cachedSubnets", JSON.stringify(cachedSubnets));
+    localStorage.setItem(
+      "ipv4-whitelisted-subnets_cachedSubnets",
+      JSON.stringify(cachedSubnets),
+    );
 
     checkSubnetsButton.disabled = false;
     cacheSubnetsButton.disabled = false;
@@ -214,14 +263,14 @@ const cacheSubnets = async () => {
 
 // Returns N random unique hosts from a subnet based on CIDR.
 const getSubnetSample = (cidr, n) => {
-  const [ip, maskStr] = cidr.split('/');
+  const [ip, maskStr] = cidr.split("/");
 
-  const ipToUint32 = s => {
-    const [a, b, c, d] = s.split('.').map(Number);
+  const ipToUint32 = (s) => {
+    const [a, b, c, d] = s.split(".").map(Number);
     return a * 2 ** 24 + b * 2 ** 16 + c * 2 ** 8 + d;
   };
 
-  const uint32ToIp = x => {
+  const uint32ToIp = (x) => {
     const a = Math.floor(x / 2 ** 24) & 255;
     const b = Math.floor(x / 2 ** 16) & 255;
     const c = Math.floor(x / 2 ** 8) & 255;
@@ -239,7 +288,9 @@ const getSubnetSample = (cidr, n) => {
     const pick = swap.has(r) ? swap.get(r) : r;
     swap.set(r, swap.has(i) ? swap.get(i) : i);
 
-    result[i] = uint32ToIp(Math.floor(ipToUint32(ip) / blockSize) * blockSize + pick + 1);
+    result[i] = uint32ToIp(
+      Math.floor(ipToUint32(ip) / blockSize) * blockSize + pick + 1,
+    );
   }
 
   return result;
@@ -257,7 +308,10 @@ const checkIpv4Host = async (ip, earlyAbortCtrl, ref) => {
   const t = setTimeout(() => timeoutCtrl.abort(), TIMEOUT_MS);
   const prefix = `Host checker[${ip}]`;
 
-  const abortSignals = AbortSignal.any([earlyAbortCtrl.signal, timeoutCtrl.signal]);
+  const abortSignals = AbortSignal.any([
+    earlyAbortCtrl.signal,
+    timeoutCtrl.signal,
+  ]);
 
   let result = true;
   try {
@@ -278,11 +332,15 @@ const checkIpv4Host = async (ip, earlyAbortCtrl, ref) => {
     earlyAbortCtrl.abort();
   }
 
-  logPush("INFO", prefix, `${result ? "Alive ✅" : (earlyAbortCtrl.signal.aborted ? "Early abort ⏭️" : "Dead 💀")}.`);
+  logPush(
+    "INFO",
+    prefix,
+    `${result ? "Alive ✅" : earlyAbortCtrl.signal.aborted ? "Early abort ⏭️" : "Dead 💀"}.`,
+  );
   return result;
-}
+};
 
-const isIpv4Cidr = s => s.includes('.') && s.includes('/');
+const isIpv4Cidr = (s) => s.includes(".") && s.includes("/");
 
 const fetchAsIpv4Subnets = async (asn) => {
   const prefix = `AS IPv4 subnets fetcher[AS${asn}]`;
@@ -290,21 +348,49 @@ const fetchAsIpv4Subnets = async (asn) => {
 
   try {
     logPush("INFO", prefix, `Started`);
-    const prefixes = (await (await fetch(RIPE_API_URL + "announced-prefixes/data.json?resource=" + asn)).json()).data.prefixes
-      .map(x => x.prefix)
-      .filter(x => isIpv4Cidr(x));
+    const prefixes = (
+      await (
+        await fetch(
+          RIPE_API_URL + "announced-prefixes/data.json?resource=" + asn,
+        )
+      ).json()
+    ).data.prefixes
+      .map((x) => x.prefix)
+      .filter((x) => isIpv4Cidr(x));
 
     logPush("INFO", prefix, `Done (total: ${prefixes.length}).`);
     return prefixes;
   } catch (err) {
     throw prefix + err;
   }
-}
+};
 
 const fetchProviderIpv4Subnets = async (provider) => {
   const prefix = `Provider IPv4 subnets fetcher[${provider.name}]`;
 
   logPush("INFO", prefix, `Started`);
+
+  if (provider.prefixSource) {
+    const response = await fetch(getUniqueUrl(provider.prefixSource), {
+      credentials: "omit",
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`${prefix}: snapshot returned HTTP ${response.status}`);
+    }
+
+    const suitable = selectSnapshotPrefixes(
+      await response.json(),
+      SUBNET_ONLY_24_PREFIX,
+    );
+    logPush(
+      "INFO",
+      prefix,
+      `Done (exact snapshot, suitable: ${suitable.length}).`,
+    );
+    return suitable;
+  }
+
   const tasks = [];
   for (let i = 0; i < provider.asns.length; i++) {
     tasks.push(fetchAsIpv4Subnets(provider.asns[i]));
@@ -315,17 +401,25 @@ const fetchProviderIpv4Subnets = async (provider) => {
   let suitable = merged;
 
   if (SUBNET_ONLY_24_PREFIX) {
-    suitable = merged.filter(x => x.split('/')[1] == "24");
+    suitable = merged.filter((x) => x.split("/")[1] == "24");
   }
 
-  logPush("INFO", prefix, `Done (all: ${all.length}, merged: ${merged.length}, suitable: ${suitable.length}).`);
+  logPush(
+    "INFO",
+    prefix,
+    `Done (all: ${all.length}, merged: ${merged.length}, suitable: ${suitable.length}).`,
+  );
   return suitable;
-}
+};
 
 const saveResults = () => {
-  const content = "provider;cidr;aliveCount\n" + resultsData.map(x => `${x.provider};${x.cidr};${x.aliveCount}`).join("\n");
+  const content =
+    "provider;cidr;aliveCount\n" +
+    resultsData
+      .map((x) => `${x.provider};${x.cidr};${x.aliveCount}`)
+      .join("\n");
   const blob = new Blob([content], {
-    type: "text/csv;charset=utf-8"
+    type: "text/csv;charset=utf-8",
   });
 
   const url = URL.createObjectURL(blob);
@@ -352,7 +446,7 @@ testSuiteOptions.onchange = () => {
   updateProviderSummary();
 };
 
-document.addEventListener("click", event => {
+document.addEventListener("click", (event) => {
   if (testSuiteDropdown.open && !testSuiteDropdown.contains(event.target)) {
     testSuiteDropdown.open = false;
   }
@@ -367,7 +461,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkSubnetsButton.disabled = false;
     status.textContent = "Ready (cached ⚡)";
     status.className = "status-ready";
-    logPush("INFO", null, `Cached subnets loaded (providers: ${Object.keys(cachedSubnets).length}, total subnets: ${total}).`);
+    logPush(
+      "INFO",
+      null,
+      `Cached subnets loaded (providers: ${Object.keys(cachedSubnets).length}, total subnets: ${total}).`,
+    );
     return;
   }
 

@@ -1,46 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RU :: IPv4 Whitelisted Subnets</title>
+    <link rel="stylesheet" href="./style.css?v=4044dbf" />
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RU :: IPv4 Whitelisted Subnets</title>
-  <link rel="stylesheet" href="./style.css?v=4044dbf">
-</head>
-
-<body>
-  <div class="container">
-    <div>
-      <button id="cache-subnets-btn" class="btn">Cache</button>
-      <button id="check-subnets-btn" class="btn" disabled>Check 🔥</button>
-      <button id="save-btn" class="btn" disabled>💾</button>
-      <details id="test-suite-dropdown" class="providers-dropdown">
-        <summary id="test-suite-summary">Providers</summary>
-        <div class="providers-menu">
-          <div id="test-suite-options"></div>
-        </div>
-      </details>
-      <span class="status-br"></span>
-      <span class="header">
-        Status: <span id="status" class="status-non-cached">Ready (non-cached ⚠️)</span>
-      </span>
+  <body>
+    <div class="container">
+      <div>
+        <button id="cache-subnets-btn" class="btn">Cache</button>
+        <button id="check-subnets-btn" class="btn" disabled>Check 🔥</button>
+        <button id="save-btn" class="btn" disabled>💾</button>
+        <details id="test-suite-dropdown" class="providers-dropdown">
+          <summary id="test-suite-summary">Providers</summary>
+          <div class="providers-menu">
+            <div id="test-suite-options"></div>
+          </div>
+        </details>
+        <span class="status-br"></span>
+        <span class="header">
+          Status:
+          <span id="status" class="status-non-cached"
+            >Ready (non-cached ⚠️)</span
+          >
+        </span>
+      </div>
     </div>
-  </div>
-  <table id="results">
-    <tr>
-      <th>#</th>
-      <th>Provider</th>
-      <th>Whitelisted Subnet</th>
-    </tr>
-  </table>
-  <pre id="log"></pre>
-  <div class="footer">
-    💡 DPI[ipv4 whitelisted subnets] /
-    This checker (and others) are available in <b><a href="https://github.com/hyperion-cs/dpi-checkers"
-        target="_blank">this</a></b> open-source repository.
-  </div>
+    <table id="results">
+      <tr>
+        <th>#</th>
+        <th>Provider</th>
+        <th>Whitelisted Subnet</th>
+      </tr>
+    </table>
+    <pre id="log"></pre>
+    <div class="footer">
+      💡 DPI[ipv4 whitelisted subnets] / This checker (and others) are available
+      in
+      <b
+        ><a href="https://github.com/hyperion-cs/dpi-checkers" target="_blank"
+          >this</a
+        ></b
+      >
+      open-source repository.
+    </div>
 
-  <script src="main.js?v=4044dbf"></script>
-</body>
-
+    <script type="module" src="main.js?v=aeza-all-1"></script>
+  </body>
 </html>
